@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+    int *nilai;
+    int jumlahSiswa;
+    float total = 0, average;
+
+    printf("Masukkan jumlah siswa: ");
+    scanf("%d", &jumlahSiswa);
+
+    if (jumlahSiswa <= 0) {
+        printf("Jumlah siswa tidak valid.\n");
+        return 1;
+    }
+
+    nilai = (int *)malloc(jumlahSiswa * sizeof(int));
+    if (nilai == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < jumlahSiswa; i++) {
+        printf("Masukkan nilai siswa ke-%d: ", i + 1);
+        scanf("%d", &nilai[i]);
+        total = total + nilai[i];
+    }
+
+    average = total / jumlahSiswa;
+    printf("Rata-rata nilai: %.2f\n", average);
+
+    free(nilai);
+
+    return 0;
+}
