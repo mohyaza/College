@@ -1,0 +1,51 @@
+// Superclass
+class Animal {
+    String name;
+
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    public void sound() {
+        System.out.println("Hewan bersuara");
+    }
+}
+
+// Subclass Dog
+class Dog extends Animal {
+
+    public Dog(String name) {
+        super(name);
+    }
+
+    @Override
+    public void sound() {
+        System.out.println(name + " menggonggong woof woof!");
+    }
+}
+
+// Subclass Cat
+class Cat extends Animal {
+
+    public Cat(String name) {
+        super(name);
+    }
+
+    @Override
+    public void sound() {
+        System.out.println(name + " mengeong meow meow!");
+    }
+}
+
+public class Inheritance {
+    public static void main(String[] args) {
+
+        Animal hewan = new Animal("hewan");
+        Dog dog = new Dog("fufu");
+        Cat cat = new Cat("fafa");
+
+        hewan.sound();
+        dog.sound();
+        cat.sound();
+    }
+}
