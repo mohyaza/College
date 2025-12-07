@@ -1,0 +1,190 @@
+class Book {
+    String title, author;
+    boolean available = true; // true = tersedia, false = dipinjam
+
+    Book(String t, String a) {
+        title = t;
+        author = a;
+    }
+
+    public String toString() {
+        return title + " - " + author + " (" + (available ? "Tersedia" : "Dipinjam") + ")";
+    }
+}
+
+// soal no. 1 user sebagai parent class
+class User {
+    String name;
+    User(String n) { name = n; }
+
+    void interact() {
+        System.out.println("User berinteraksi dengan sistem.");
+    }
+}
+
+// soal no. 1 admin sebagai child class
+class Admin extends User {
+    Admin(String n) { super(n); }
+
+    @Override
+    void interact() {
+        System.out.println("Admin bisa menambah dan menghapus buku.");
+    }
+
+    int addBook(Book[] books, int count, String t, String a) {
+        books[count] = new Book(t, a);
+        System.out.println("Admin menambah buku: " + t + " - " + a);
+        return count + 1;
+    }
+
+    int removeBook(Book[] books, int count, String t) {
+        for (int i = 0; i < count; i++) {
+            if (books[i].title.equalsIgnoreCase(t)) {
+                books[i] = books[count - 1];
+                books[count - 1] = null;
+                System.out.println("Admin menghapus buku: " + t);
+                return count - 1;
+            }
+        }
+        System.out.println("Buku \"" + t + "\" tidak ditemukan.");
+        return count;
+    }
+}
+
+// soal no. 1 member sebagai child class
+class Member extends User {
+    Member(String n) { super(n); }
+
+    @Override
+    void interact() {
+        System.out.println("Member hanya bisa meminjam dan mengembalikan buku.");
+    }
+
+    void borrow(Book[] books, int count, String t) {
+        System.out.println("\n" + name + " meminjam: " + t);
+        for (int i = 0; i < count; i++) {
+            if (books[i].title.equalsIgnoreCase(t)) {
+                if (books[i].available) {
+                    books[i].available = false;
+                    System.out.println("Buku berhasil dipinjam: " + books[i].title);
+                } else {
+                    System.out.println("Buku sudah dipinjam.");
+                }
+                return;
+            }
+        }
+        System.out.println("Buku tidak ditemukan.");
+    }
+
+    void giveBack(Book[] books, int count, String t) {
+        System.out.println("\n" + name + " mengembalikan: " + t);
+        for (int i = 0; i < count; i++) {
+            if (books[i].title.equalsIgnoreCase(t)) {
+                books[i].available = true;
+                System.out.println("Buku berhasil dikembalikan.");
+                return;
+            }
+        }
+        System.out.println("Buku tidak ditemukan di sistem.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        Book[] books = new Book[10];
+        int count = 0;
+
+        Admin admin = new Admin("Admin");
+        Member member = new Member("Group 3");
+
+        // Soal no. 4 Polymorphism
+        System.out.println("=====================================");
+        System.out.println("        Contoh Polymorphism          ");
+        System.out.println("=====================================");
+        admin.interact();
+        member.interact();
+
+        // Soal no. 2 Admin menambah buku
+        System.out.println("\n=====================================");
+        System.out.println("          Admin menambah buku        ");
+        System.out.println("=====================================");
+        count = admin.addBook(books, count,
+            "Data Structures and Algorithms in Java (6th ed.)",
+            "Goodrich & Tamassia");
+
+        count = admin.addBook(books, count,
+            "Data Structures and Algorithm Analysis in Java (3rd ed.)",
+            "Weiss");
+
+        count = admin.addBook(books, count,
+            "Introduction to Algorithms (3rd ed.)",
+            "Cormen, Leiserson, Rivest & Stein");
+
+        // memanggil method mencari buku berdasarkan judul
+        System.out.println("\n=====================================");
+        System.out.println(" Mencari buku 'Introduction to Algorithms (3rd ed.)' ");
+        System.out.println("=====================================");
+        searchBook(books, count, "Introduction to Algorithms (3rd ed.)");
+
+        // memanggil method untuk menampilkan semua buku yang tersedia
+        System.out.println("\n=====================================");
+        System.out.println("           Buku Tersedia             ");
+        System.out.println("=====================================");
+        showAvailable(books, count);
+
+        // Soal no. 3 Member meminjam buku
+        System.out.println("\n=====================================");
+        System.out.println("        Member meminjam buku         ");
+        System.out.println("=====================================");
+        member.borrow(books, count,
+            "Introduction to Algorithms (3rd ed.)");
+
+        System.out.println("\n=====================================");
+        System.out.println("    Buku tersedia setelah dipinjam   ");
+        System.out.println("=====================================");
+        showAvailable(books, count);
+
+        // Soal no. 3 Member mengembalikan buku
+        System.out.println("\n=====================================");
+        System.out.println("      Member mengembalikan buku      ");
+        System.out.println("=====================================");
+        member.giveBack(books, count,
+            "Introduction to Algorithms (3rd ed.)");
+
+        System.out.println("\n=====================================");
+        System.out.println("   Buku tersedia setelah dikembalikan");
+        System.out.println("=====================================");
+        showAvailable(books, count);
+
+        // Soal no. 2 Admin menghapus buku
+        System.out.println("\n=====================================");
+        System.out.println("          Admin menghapus buku       ");
+        System.out.println("=====================================");
+        count = admin.removeBook(books, count,
+            "Data Structures and Algorithms in Java (6th ed.)");
+
+        System.out.println("Setelah hapus buku:");
+        showAvailable(books, count);
+    }
+
+    // Soal no. 3 menampilkan semua buku yang tersedia
+    static void showAvailable(Book[] books, int count) {
+        for (int i = 0; i < count; i++) {
+            if (books[i].available) {
+                System.out.println("- " + books[i]);
+            }
+        }
+    }
+
+    // Soal no. 2 mencari buku berdasarkan judul
+    static void searchBook(Book[] books, int count, String title) {
+        for (int i = 0; i < count; i++) {
+            if (books[i].title.equalsIgnoreCase(title)) {
+                System.out.println("Buku ditemukan: " + books[i]);
+                return;
+            }
+        }
+        System.out.println("Buku \"" + title + "\" tidak ditemukan.");
+    }
+}
