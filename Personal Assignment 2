@@ -1,0 +1,162 @@
+import java.util.Scanner;
+
+public class Main {
+
+    // Global variable jumlah data
+    static final int MAX_DATA     = 5;
+
+    // Global variable panjang input
+    static final int MAX_NIM      = 10;
+    static final int MAX_NAMA     = 30;
+    static final int MAX_JURUSAN  = 50;
+
+    // Setiap node menyimpan data satu mahasiswa
+    static class Node {
+        String nim;
+        String nama;
+        String jurusan;
+        Node next;   // menunjuk ke node berikutnya
+
+        Node(String nim, String nama, String jurusan) {
+            this.nim     = nim;
+            this.nama    = nama;
+            this.jurusan = jurusan;
+            this.next    = null;
+        }
+    }
+
+    static Node head = null;
+    static int count = 0;
+
+    // push function with input parameters
+    static void push(String nim, String nama, String jurusan) {
+
+        // Cek kapasitas
+        if (count >= MAX_DATA) {
+            System.out.println("Kapasitas penuh");
+            return;
+        }
+
+        Node baru = new Node(nim, nama, jurusan);
+
+        if (head == null) {
+            head = baru;
+        } 
+        
+        else {
+            Node temp = head;
+            while (temp.next != null) {   
+                temp = temp.next;
+            }
+            temp.next = baru;            
+        }
+
+        count++;
+        System.out.println("Data berhasil ditambahkan.");
+    }
+
+    // Mengurutkan data berdasarkan NIM
+    static void sort() {
+        
+        for (Node i = head; i != null; i = i.next) {
+
+            for (Node j = i.next; j != null; j = j.next) {
+
+                if (i.nim.compareTo(j.nim) > 0) {
+
+                    String tempNim     = i.nim;
+                    String tempNama    = i.nama;
+                    String tempJurusan = i.jurusan;
+
+                    i.nim     = j.nim;
+                    i.nama    = j.nama;
+                    i.jurusan = j.jurusan;
+
+                    j.nim     = tempNim;
+                    j.nama    = tempNama;
+                    j.jurusan = tempJurusan;
+                }
+            }
+        }
+    }
+
+    static void tampil() {
+
+        if (head == null) {
+            System.out.println("Data kosong.");
+            return;
+        }
+
+        // Execute NIM sorting dulu
+        sort();
+
+        // Tampilkan data
+        Node temp = head;
+        while (temp != null) {
+            System.out.println(temp.nim + " - " + temp.nama + " - " + temp.jurusan);
+            temp = temp.next;
+        }
+    }
+
+    // menghapus data
+    static void popAll() {
+        head  = null;   
+        count = 0;
+        System.out.println("Semua data telah dihapus.");
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        int pilih;
+
+        do {
+            // Menu utama
+            System.out.println("\n1. Push");
+            System.out.println("2. Tampil");
+            System.out.println("3. Pop All");
+            System.out.println("4. Keluar");
+            System.out.print("Pilih: ");
+            pilih = sc.nextInt();
+            sc.nextLine();   
+
+            switch (pilih) {
+
+                // Menu tambah data
+                case 1 -> {
+                    System.out.print("NIM     : ");
+                    String nim = sc.nextLine();
+
+                    System.out.print("Nama    : ");
+                    String nama = sc.nextLine();
+
+                    System.out.print("Jurusan : ");
+                    String jurusan = sc.nextLine();
+
+                    // Validasi panjang input
+                    if (nim.length() <= MAX_NIM &&
+                        nama.length() <= MAX_NAMA &&
+                        jurusan.length() <= MAX_JURUSAN) {
+
+                        push(nim, nama, jurusan);
+                    } else {
+                        System.out.println("Input melebihi batas panjang.");
+                    }
+                }
+
+                // Menu tampil data
+                case 2 -> tampil();
+
+                // Menu hapus semua data
+                case 3 -> popAll();
+
+                // Menu keluar
+                case 4 -> System.out.println("Keluar dari program.");
+
+                // Jika pilihan salah
+                default -> System.out.println("Pilihan tidak valid.");
+            }
+
+        } while (pilih != 4);
+    }
+}
